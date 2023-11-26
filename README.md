@@ -7,15 +7,19 @@ Page replacement algorithms to analyse page fault and belady's anomaly and thras
 
 ## How to run
 1. Clone the repository
-2. Run the following commands in the terminal
+2. Run the following commands in the terminal to compile the code:
     ```bash
     g++ mru.cpp pbPlots.cpp supportLib.cpp -lm -o mru
-    ./mru
     g++ lru.cpp pbPlots.cpp supportLib.cpp -lm -o lru
-    ./lru
     ```
+3. Run the following commands in the terminal to generate plots:
+    ```bash
+    ./mru <trials> <maxFrameSize> <maxPageArraySize>
+    ./lru <trials> <maxFrameSize> <maxPageArraySize>
+    ```
+    Replace the placeholders with the desired values. (They will fall back to default values if not provided)
     This will generate plots for both the algorithms in ./plots/ folder.
     Naming convention for the plots is as follows:
     "Least Recently Used-\<number of trials\>-\<maxFrameSize\>-\<maxPageArraySize\>"
-3. The values of number of trials, maxFrameSize and maxPageArraySize can be changed in the respective files.
+Note: All three command line args must be provided or none of them would be considered and the program will fall back to default values.
 
