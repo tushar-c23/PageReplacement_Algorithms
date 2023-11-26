@@ -52,9 +52,9 @@ int pageFaults(int pages[], int n, int capacity)
 void plotGraph(vector<double> x, vector<double> y, int trials, int maxFrameSize, int maxPageSize)
 {
     RGBABitmapImageReference *imageRef = CreateRGBABitmapImageReference();
-    
-    wstring titleText = L"Most Recently Used-"+to_wstring(trials)+L"-"+to_wstring(maxFrameSize)+L"-"+to_wstring(maxPageSize);
-    string titleTextString = "Most Recently Used-"+to_string(trials)+"-"+to_string(maxFrameSize)+"-"+to_string(maxPageSize);
+
+    wstring titleText = L"Most Recently Used-" + to_wstring(trials) + L"-" + to_wstring(maxFrameSize) + L"-" + to_wstring(maxPageSize);
+    string titleTextString = "Most Recently Used-" + to_string(trials) + "-" + to_string(maxFrameSize) + "-" + to_string(maxPageSize);
     const wchar_t *titleTextConverted = titleText.c_str();
 
     ScatterPlotSeries *series = GetDefaultScatterPlotSeriesSettings();
@@ -68,14 +68,14 @@ void plotGraph(vector<double> x, vector<double> y, int trials, int maxFrameSize,
     settings->autoBoundaries = true;
     settings->autoPadding = true;
     settings->title = toVector(titleTextConverted);
-    settings->xLabel = toVector(L"Frame Size");
-    settings->yLabel = toVector(L"Page Faults");
+    settings->xLabel = toVector(L"Page Faults");
+    settings->yLabel = toVector(L"Frame Size");
     settings->scatterPlotSeries->push_back(series);
 
     DrawScatterPlotFromSettings(imageRef, settings);
 
     vector<double> *pngData = ConvertToPNG(imageRef->image);
-    WriteToFile(pngData, "plots/"+titleTextString+".png");
+    WriteToFile(pngData, "plots/" + titleTextString + ".png");
     DeleteImage(imageRef->image);
 
     return;
@@ -85,9 +85,10 @@ int main(int argc, char *argv[])
 {
     int trials = 30;
     // Represents the maximum number of pages not maxPageSize
-    int maxPageSize = 100;
     int maxFrameSize = 100;
-    map<int,int> pageFaultsToFrameSize;
+    int maxPageSize = 10;
+    map<int, int> pageFaultsToFrameSize;
+    srand(time(0));
     for (int i = 0; i < trials; i++)
     {
         int pageSize = rand() % maxPageSize;
@@ -104,8 +105,8 @@ int main(int argc, char *argv[])
     {
         cout << setw(12) << it->first << "|" << setw(12) << it->second << endl;
     }
-    
-    //Plotting
+
+    // Plotting
     vector<double> x;
     vector<double> y;
 
@@ -115,6 +116,6 @@ int main(int argc, char *argv[])
         y.push_back(double(it->second));
     }
 
-    plotGraph(x,y,trials,maxFrameSize,maxPageSize);
+    plotGraph(x, y, trials, maxFrameSize, maxPageSize);
     return 0;
 }

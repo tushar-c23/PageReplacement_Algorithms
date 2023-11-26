@@ -68,8 +68,8 @@ void plotGraph(vector<double> x, vector<double> y, int trials, int maxFrameSize,
     settings->autoBoundaries = true;
     settings->autoPadding = true;
     settings->title = toVector(titleTextConverted);
-    settings->xLabel = toVector(L"Frame Size");
-    settings->yLabel = toVector(L"Page Faults");
+    settings->xLabel = toVector(L"Page Faults");
+    settings->yLabel = toVector(L"Frame Size");
     settings->scatterPlotSeries->push_back(series);
 
     DrawScatterPlotFromSettings(imageRef, settings);
@@ -85,9 +85,10 @@ int main(int argc, char *argv[])
 {
     int trials = 30;
     // Represents the maximum number of pages not maxPageSize
-    int maxPageSize = 100;
     int maxFrameSize = 100;
+    int maxPageSize = 10;
     map<int,int> pageFaultsToFrameSize;
+    srand(time(0));
     for (int i = 0; i < trials; i++)
     {
         int pageSize = rand() % maxPageSize;
