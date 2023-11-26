@@ -1,5 +1,5 @@
 # PageReplacement_Algorithms
-Page replacement algorithms to analyse page fault and belady's anomaly.
+Page replacement algorithms to analyse page fault and belady's anomaly and thrashing.
 
 ## Algorithms
 1. Least Recently Used (LRU)
