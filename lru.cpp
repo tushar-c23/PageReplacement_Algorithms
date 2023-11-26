@@ -84,6 +84,7 @@ void plotGraph(vector<double> x, vector<double> y, int trials, int maxFrameSize,
 int main(int argc, char *argv[])
 {
     int trials = 30;
+    // Represents the maximum number of pages not maxPageSize
     int maxPageSize = 100;
     int maxFrameSize = 100;
     map<int,int> pageFaultsToFrameSize;
