@@ -63,8 +63,8 @@ void plotGraph(vector<double> x, vector<double> y, int trials, int maxFrameSize,
     series->linearInterpolation = true;
 
     ScatterPlotSettings *settings = GetDefaultScatterPlotSettings();
-    settings->width = 1080;
-    settings->height = 720;
+    settings->width = 1920;
+    settings->height = 1080;
     settings->autoBoundaries = true;
     settings->autoPadding = true;
     settings->title = toVector(titleTextConverted);
@@ -87,6 +87,16 @@ int main(int argc, char *argv[])
     // Represents the maximum number of pages not maxPageSize
     int maxFrameSize = 100;
     int maxPageSize = 10;
+
+    if(argc == 4) {
+        trials = atoi(argv[1]);
+        maxFrameSize = atoi(argv[2]);
+        maxPageSize = atoi(argv[3]);
+        cout << "Running with " << trials << " trials, " << maxFrameSize << " max frame size and " << maxPageSize << " max page size" << endl;
+    } else {
+        cout << "Running with default values" << endl;
+    }
+
     map<int,int> pageFaultsToFrameSize;
     srand(time(0));
     for (int i = 0; i < trials; i++)
@@ -97,7 +107,7 @@ int main(int argc, char *argv[])
         {
             pages[j] = rand() % maxPageSize;
         }
-        int capacity = rand() % maxFrameSize;
+        int capacity = rand() % maxFrameSize + 1;
         pageFaultsToFrameSize[capacity] = pageFaults(pages, pageSize, capacity);
     }
     cout << "Frame Size  | Page Faults" << endl;
