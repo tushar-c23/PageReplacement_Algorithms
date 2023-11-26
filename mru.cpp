@@ -29,13 +29,13 @@ int pageFaults(int pages[], int n, int capacity)
             // Page not present
             if (s.find(pages[i]) == s.end())
             {
-                int leastRecentlyUsed = INT_MAX;
+                int mostRecentlyUsed = INT_MAX;
                 int val;
                 for (auto it = s.begin(); it != s.end(); it++)
                 {
-                    if (indexes[*it] < leastRecentlyUsed)
+                    if (indexes[*it] > mostRecentlyUsed)
                     {
-                        leastRecentlyUsed = indexes[*it];
+                        mostRecentlyUsed = indexes[*it];
                         val = *it;
                     }
                 }
@@ -52,9 +52,9 @@ int pageFaults(int pages[], int n, int capacity)
 void plotGraph(vector<double> x, vector<double> y, int trials, int maxFrameSize, int maxPageSize)
 {
     RGBABitmapImageReference *imageRef = CreateRGBABitmapImageReference();
-
-    wstring titleText = L"Least Recently Used-"+to_wstring(trials)+L"-"+to_wstring(maxFrameSize)+L"-"+to_wstring(maxPageSize);
-    string titleTextString = "Least Recently Used-"+to_string(trials)+"-"+to_string(maxFrameSize)+"-"+to_string(maxPageSize);
+    
+    wstring titleText = L"Most Recently Used-"+to_wstring(trials)+L"-"+to_wstring(maxFrameSize)+L"-"+to_wstring(maxPageSize);
+    string titleTextString = "Most Recently Used-"+to_string(trials)+"-"+to_string(maxFrameSize)+"-"+to_string(maxPageSize);
     const wchar_t *titleTextConverted = titleText.c_str();
 
     ScatterPlotSeries *series = GetDefaultScatterPlotSeriesSettings();
