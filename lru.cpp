@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#include "pbPlots.hpp"
+#include "supportLib.hpp"
 using namespace std;
 
 int pageFaults(int pages[], int n, int capacity)
@@ -47,7 +49,35 @@ int pageFaults(int pages[], int n, int capacity)
     return pageFaults;
 }
 
-int main()
+void plotGraph(vector<double> x, vector<double> y)
+{
+    RGBABitmapImageReference *imageRef = CreateRGBABitmapImageReference();
+
+    ScatterPlotSeries *series = GetDefaultScatterPlotSeriesSettings();
+    series->xs = &x;
+    series->ys = &y;
+    series->linearInterpolation = true;
+
+    ScatterPlotSettings *settings = GetDefaultScatterPlotSettings();
+    settings->width = 1080;
+    settings->height = 720;
+    settings->autoBoundaries = true;
+    settings->autoPadding = true;
+    settings->title = toVector(L"Page Faults vs Frame Size");
+    settings->xLabel = toVector(L"Frame Size");
+    settings->yLabel = toVector(L"Page Faults");
+    settings->scatterPlotSeries->push_back(series);
+
+    DrawScatterPlotFromSettings(imageRef, settings);
+
+    vector<double> *pngData = ConvertToPNG(imageRef->image);
+    WriteToFile(pngData, "plots/plot.png");
+    DeleteImage(imageRef->image);
+
+    return;
+}
+
+int main(int argc, char *argv[])
 {
     int trials = 100;
     int maxPageSize = 1000;
@@ -69,5 +99,17 @@ int main()
     {
         cout << setw(12) << it->first << "|" << setw(12) << it->second << endl;
     }
+    
+    //Plotting
+    vector<double> x;
+    vector<double> y;
+
+    for (auto it = pageFaultsToFrameSize.begin(); it != pageFaultsToFrameSize.end(); it++)
+    {
+        x.push_back(double(it->first));
+        y.push_back(double(it->second));
+    }
+
+    plotGraph(x,y);
     return 0;
 }
