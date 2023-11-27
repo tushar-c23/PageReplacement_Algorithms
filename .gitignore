@@ -32,6 +32,6 @@
 *.app
 
 .vscode
-/plots/*
+/plots/**
 mru
 lru
