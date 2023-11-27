@@ -5,6 +5,17 @@ Page replacement algorithms to analyse page fault and belady's anomaly and thras
 1. Least Recently Used (LRU)
 2. Most Recently Used (MRU)
 
+## Some Useful Information
+- The reference string is randomly generated using a seed value. This seed value is generated using the current time. So, the reference string will be different every time the program is run.
+- The user can provide 3 values as command line arguments. These values are:
+    1. Maximum frame size
+    2. Maximum page array size (the maximum number of pages in the reference string)
+    3. Flag
+
+### Flags
+- **sf**: Fixed reference string for each call as the frame size increments.
+- **sr**: Random reference string for each call as the frame size increments.
+
 ## How to run
 1. Clone the repository
 2. Run the following commands in the terminal to compile the code:
@@ -14,15 +25,15 @@ Page replacement algorithms to analyse page fault and belady's anomaly and thras
     ```
 3. Run the following commands in the terminal to generate plots:
     ```bash
-    ./mru <trials> <maxFrameSize> <maxPageArraySize>
-    ./lru <trials> <maxFrameSize> <maxPageArraySize>
+    ./mru <maxFrameSize> <maxPageArraySize> -<flag>
+    ./lru <maxFrameSize> <maxPageArraySize> -<flag>
     ```
-    Replace the placeholders with the desired values. (They will fall back to default values if not provided). [^1] <br/>
+    Replace the placeholders with the desired values. [^1] <br/>
 
 This program will generate plots for the algorithms in "./plots/" folder. <br/>
     
 Naming convention for the plots is as follows:
-    **"\<Algorithm Name\>-\<number of trials\>-\<maxFrameSize\>-\<maxPageArraySize\>"**
+    **"\<Algorithm Name\>-\<flag\>-\<maxFrameSize\>-\<maxPageArraySize\>"**
 
-[^1]: Note: All three command line args must be provided or none of them would be considered and the program will fall back to default values.
+[^1]: Note: All three command line args must be provided.
 

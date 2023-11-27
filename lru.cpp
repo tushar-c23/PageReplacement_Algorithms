@@ -3,6 +3,15 @@
 #include "supportLib.hpp"
 using namespace std;
 
+void printPageFaultMap(map<int, int> pageFaultsToFrameSize)
+{
+    cout << "Frame Size  | Page Faults" << endl;
+    for (auto it = pageFaultsToFrameSize.begin(); it != pageFaultsToFrameSize.end(); it++)
+    {
+        cout << setw(12) << it->first << "|" << setw(12) << it->second << endl;
+    }
+}
+
 int pageFaults(int pages[], int n, int capacity)
 {
     // Page record
@@ -49,12 +58,30 @@ int pageFaults(int pages[], int n, int capacity)
     return pageFaults;
 }
 
-void plotGraph(vector<double> x, vector<double> y, int trials, int maxFrameSize, int maxPageSize)
+void plotGraph(vector<double> x, vector<double> y, char* flag, int maxFrameSize, int maxPageSize)
 {
     RGBABitmapImageReference *imageRef = CreateRGBABitmapImageReference();
 
-    wstring titleText = L"Least Recently Used-"+to_wstring(trials)+L"-"+to_wstring(maxFrameSize)+L"-"+to_wstring(maxPageSize);
-    string titleTextString = "Least Recently Used-"+to_string(trials)+"-"+to_string(maxFrameSize)+"-"+to_string(maxPageSize);
+    wstring flagText;
+    string flagTextString;
+
+    if(string(flag) == "-sf")
+    {
+        flagText = L"Fixed";
+        flagTextString = "Fixed";
+    }
+    else if(string(flag) == "-sr")
+    {
+        flagText = L"Random";
+        flagTextString = "Random";
+    }
+    else
+    {
+        flagText = L"";
+    }
+
+    wstring titleText = L"Least Recently Used-" + flagText + L"-" + to_wstring(maxFrameSize) + L"-" + to_wstring(maxPageSize);
+    string titleTextString = "Least Recently Used-" + flagTextString + "-" + to_string(maxFrameSize) + "-" + to_string(maxPageSize);
     const wchar_t *titleTextConverted = titleText.c_str();
 
     ScatterPlotSeries *series = GetDefaultScatterPlotSeriesSettings();
@@ -75,48 +102,15 @@ void plotGraph(vector<double> x, vector<double> y, int trials, int maxFrameSize,
     DrawScatterPlotFromSettings(imageRef, settings);
 
     vector<double> *pngData = ConvertToPNG(imageRef->image);
-    WriteToFile(pngData, "plots/"+titleTextString+".png");
+    WriteToFile(pngData, "plots/" + titleTextString + ".png");
     DeleteImage(imageRef->image);
 
     return;
 }
 
-int main(int argc, char *argv[])
+void plotFromMap(map<int, int> pageFaultsToFrameSize, char* flag, int maxFrameSize, int maxPageSize)
 {
-    int trials = 30;
-    // Represents the maximum number of pages not maxPageSize
-    int maxFrameSize = 100;
-    int maxPageSize = 10;
-
-    if(argc == 4) {
-        trials = atoi(argv[1]);
-        maxFrameSize = atoi(argv[2]);
-        maxPageSize = atoi(argv[3]);
-        cout << "Running with " << trials << " trials, " << maxFrameSize << " max frame size and " << maxPageSize << " max page size" << endl;
-    } else {
-        cout << "Running with default values" << endl;
-    }
-
-    map<int,int> pageFaultsToFrameSize;
-    srand(time(0));
-    for (int i = 0; i < trials; i++)
-    {
-        int pageSize = rand() % maxPageSize;
-        int pages[pageSize];
-        for (int j = 0; j < pageSize; j++)
-        {
-            pages[j] = rand() % maxPageSize;
-        }
-        int capacity = rand() % maxFrameSize + 1;
-        pageFaultsToFrameSize[capacity] = pageFaults(pages, pageSize, capacity);
-    }
-    cout << "Frame Size  | Page Faults" << endl;
-    for (auto it = pageFaultsToFrameSize.begin(); it != pageFaultsToFrameSize.end(); it++)
-    {
-        cout << setw(12) << it->first << "|" << setw(12) << it->second << endl;
-    }
-    
-    //Plotting
+    // Plotting
     vector<double> x;
     vector<double> y;
 
@@ -126,6 +120,83 @@ int main(int argc, char *argv[])
         y.push_back(double(it->second));
     }
 
-    plotGraph(x,y,trials,maxFrameSize,maxPageSize);
+    plotGraph(x, y, flag, maxFrameSize, maxPageSize);
+}
+
+void referenceStringFixed(int maxFrameSize, int maxPageSize, char* flag)
+{
+    map<int, int> pageFaultsToFrameSize;
+    int pages[maxPageSize];
+    srand(time(0));
+    for (int i = 0; i < maxPageSize; i++)
+    {
+        pages[i] = rand() % maxPageSize;
+    }
+    for (int frameSize = 1; frameSize < maxFrameSize; frameSize++)
+    {
+        pageFaultsToFrameSize[frameSize] = pageFaults(pages, maxPageSize, frameSize);
+    }
+
+    printPageFaultMap(pageFaultsToFrameSize);
+    plotFromMap(pageFaultsToFrameSize, flag, maxFrameSize, maxPageSize);
+}
+
+// reference string is randomised at frame size
+void referenceStringRandom(int maxFrameSize, int maxPageSize, char* flag)
+{
+    map<int, int> pageFaultsToFrameSize;
+    srand(time(0));
+    int pageSize = maxPageSize;
+    int pages[pageSize];
+    for (int frameSize = 1; frameSize < maxFrameSize; frameSize++)
+    {
+        for (int i = 0; i < maxPageSize; i++)
+        {
+            pages[i] = rand() % maxPageSize;
+        }
+        pageFaultsToFrameSize[frameSize] = pageFaults(pages, maxPageSize, frameSize);
+    }
+
+    printPageFaultMap(pageFaultsToFrameSize);
+    plotFromMap(pageFaultsToFrameSize, flag, maxFrameSize, maxPageSize);
+}
+
+int main(int argc, char *argv[])
+{
+    int maxFrameSize = 100;
+    // Represents the maximum number of pages not maxPageSize
+    int maxPageSize = 10;
+
+    if (argc >= 3)
+    {
+        // trials = atoi(argv[1]);
+        maxFrameSize = atoi(argv[1]);
+        maxPageSize = atoi(argv[2]);
+        cout << "Running with " << maxFrameSize << " max frame size and " << maxPageSize << " max page size" << endl;
+    }
+    else
+    {
+        cout << "Running with default values" << endl;
+    }
+
+    if (argc == 4)
+    {
+        if (string(argv[3]) == "-sr")
+        {
+            referenceStringRandom(maxFrameSize, maxPageSize, argv[3]);
+            return 0;
+        }
+        else if (string(argv[3]) == "-sf")
+        { // reference string fixed
+            referenceStringFixed(maxFrameSize, maxPageSize, argv[3]);
+            return 0;
+        }
+        else
+        {
+            cout << "Invalid flag" << endl;
+            return 0;
+        }
+    }
+
     return 0;
 }
