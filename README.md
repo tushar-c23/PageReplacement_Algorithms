@@ -17,9 +17,12 @@ Page replacement algorithms to analyse page fault and belady's anomaly and thras
     ./mru <trials> <maxFrameSize> <maxPageArraySize>
     ./lru <trials> <maxFrameSize> <maxPageArraySize>
     ```
-    Replace the placeholders with the desired values. (They will fall back to default values if not provided)
-    This will generate plots for both the algorithms in ./plots/ folder.
-    Naming convention for the plots is as follows:
-    "Least Recently Used-\<number of trials\>-\<maxFrameSize\>-\<maxPageArraySize\>"
-Note: All three command line args must be provided or none of them would be considered and the program will fall back to default values.
+    Replace the placeholders with the desired values. (They will fall back to default values if not provided). [^1] <br/>
+
+This program will generate plots for the algorithms in "./plots/" folder. <br/>
+    
+Naming convention for the plots is as follows:
+    **"\<Algorithm Name\>-\<number of trials\>-\<maxFrameSize\>-\<maxPageArraySize\>"**
+
+[^1]: Note: All three command line args must be provided or none of them would be considered and the program will fall back to default values.
 
