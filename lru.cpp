@@ -167,16 +167,10 @@ int main(int argc, char *argv[])
     // Represents the maximum number of pages not maxPageSize
     int maxPageSize = 10;
 
-    if (argc >= 3)
+    if(argc < 3)
     {
-        // trials = atoi(argv[1]);
-        maxFrameSize = atoi(argv[1]);
-        maxPageSize = atoi(argv[2]);
-        cout << "Running with " << maxFrameSize << " max frame size and " << maxPageSize << " max page size" << endl;
-    }
-    else
-    {
-        cout << "Running with default values" << endl;
+        cerr << "Usage: ./mru <maxFrameSize> <maxPageSize> -<flag>" << endl;
+        return 0;
     }
 
     if (argc == 4)
@@ -193,7 +187,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            cout << "Invalid flag" << endl;
+            cerr << "Invalid flag" << endl;
             return 0;
         }
     }
